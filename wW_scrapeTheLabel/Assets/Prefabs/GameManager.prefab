@@ -43,8 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 061defa17dc62244facc914c74cbe870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  difficulty: 0
-  gameDuration: 16
+  difficulty: 2
+  gameDuration: 10
   debug: 1
   text: {fileID: 0}
   scrapeForce: 3

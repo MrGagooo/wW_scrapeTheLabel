@@ -48,12 +48,52 @@ public class GameManager : MonoBehaviour
             _instance = this;
         }
 
+        SetupGame();
+    }
+
+    private void SetupGame()
+    {
         selectedLabel = labelBits[0];
+
+        //Trap Setup According to difficulty
+        TrapSetup();
 
         text.text = "";
         StartCoroutine(Timer());
     }
 
+    private void TrapSetup()
+    {
+        if (difficulty == difficultyEnum.Medium)
+        {
+            var trap1 = Random.Range(0, 3);
+
+            for(int i = 0; i < labelBits.Count - 1; i++)
+            {
+                if (i == trap1)
+                {
+                    labelBits[i].trapped = true;
+                }
+            }
+        }
+        else if (difficulty == difficultyEnum.Hard)
+        {
+            var trap1 = Random.Range(0, 3);
+            var trap2 = Random.Range(0, 3);
+            while (trap1 == trap2)
+            {
+                trap2 = Random.Range(0, 3);
+            }
+
+            for (int i = 0; i < labelBits.Count - 1; i++)
+            {
+                if (i == trap1 || i == trap2)
+                {
+                    labelBits[i].trapped = true;
+                }
+            }
+        }
+    }
 
 
     void Update()

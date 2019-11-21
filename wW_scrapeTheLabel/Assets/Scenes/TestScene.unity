@@ -823,31 +823,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5693580189403197121, guid: 00507f61487ff0a4094ac83970d856ea,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5693580189403197121, guid: 00507f61487ff0a4094ac83970d856ea,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5693580189403197121, guid: 00507f61487ff0a4094ac83970d856ea,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.2
-      objectReference: {fileID: 0}
     - target: {fileID: 5693580189403197120, guid: 00507f61487ff0a4094ac83970d856ea,
         type: 3}
       propertyPath: text
       value: 
       objectReference: {fileID: 303348592}
-    - target: {fileID: 5693580189403197120, guid: 00507f61487ff0a4094ac83970d856ea,
-        type: 3}
-      propertyPath: trapped
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5693580189403197120, guid: 00507f61487ff0a4094ac83970d856ea,
         type: 3}
       propertyPath: sprMask
