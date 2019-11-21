@@ -43,8 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 061defa17dc62244facc914c74cbe870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  difficulty: 0
   gameDuration: 16
-  beatDuration: 0
+  debug: 1
   text: {fileID: 0}
   scrapeForce: 3
   labelBits:
@@ -54,3 +55,5 @@ MonoBehaviour:
   - {fileID: 0}
   selectedLabel: {fileID: 0}
   playerTrapped: 0
+  playerIsScraping: 0
+  scrapingEnabled: 1

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,14 +11,15 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get { return _instance; } }
 
     //Public
-    public enum difficulty
-        {Low = 0,
+    public enum difficultyEnum
+        {Easy = 0,
          Medium = 1,
          Hard = 2}
 
-    public int gameDuration = 16;
-    public float beatDuration;
+    public difficultyEnum difficulty = difficultyEnum.Easy;
+    public int gameDuration = 6;
 
+    public bool debug;
     public Text text;
 
     public float scrapeForce = 3.0f;
@@ -26,9 +28,13 @@ public class GameManager : MonoBehaviour
     public LabelBitBehavior selectedLabel;
     public bool playerTrapped = false;
 
+    public bool playerIsScraping = false;
+    public bool scrapingEnabled = true;
+
     //Private
     private float scrollDeltaY;
     private float damageToInflict;
+    private int actualGameDuration;
 
 
     private void Awake()
@@ -43,20 +49,31 @@ public class GameManager : MonoBehaviour
         }
 
         selectedLabel = labelBits[0];
+
+        text.text = "";
+        StartCoroutine(Timer());
     }
 
 
 
     void Update()
     {
-        scrollDeltaY = Input.mouseScrollDelta.y;
-        text.text = damageToInflict.ToString();
+        if (scrapingEnabled)
+        {
+            scrollDeltaY = Input.mouseScrollDelta.y;
+        }
+        else
+        {
+            scrollDeltaY = 0;
+        }
 
         TrapTrigger();          // If necessary
 
         DamageProcess();
         SwitchSelectedLabel();  // If necessary
         InflictDamage();
+
+        CheckWin();
 
     }
 
@@ -92,6 +109,14 @@ public class GameManager : MonoBehaviour
         {
             damageToInflict = Mathf.Clamp(scrollDeltaY * scrapeForce, 0, Mathf.Infinity);
         }
+        if (damageToInflict < 0)
+        {
+            playerIsScraping = true;
+        }
+        else
+        {
+            playerIsScraping = false;
+        }
     }
 
     private void InflictDamage()
@@ -108,5 +133,47 @@ public class GameManager : MonoBehaviour
                 selectedLabel.trapped = false;
             }
         }
+    }
+
+    private void CheckWin()
+    {
+        if (labelBits.Count == 1 && selectedLabel.hp <= 0)
+        {
+            EndGame(true);
+        }
+    }
+
+
+    private IEnumerator Timer()
+    {
+        yield return new WaitForSeconds(gameDuration);
+
+        EndGame(false);
+    }
+
+    private void EndGame(bool victory)
+    {
+        scrapingEnabled = false;
+        StopCoroutine(Timer());
+        StopAllCoroutines();
+        if (victory)
+        {
+            text.color = Color.green;
+            text.text = "jéjé";
+        }
+        else
+        {
+            text.color = Color.red;
+            text.text = "mek t con c fou";
+        }
+
+        StartCoroutine(StopGame());
+    }
+
+    private IEnumerator StopGame()
+    {
+        yield return new WaitForSeconds(2);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
