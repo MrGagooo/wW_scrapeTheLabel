@@ -63,9 +63,10 @@ public class GameManager : MonoBehaviour
 
     private void TrapTrigger()
     {
-        if (selectedLabel.trapped = true && selectedLabel.hp < 50f && !playerTrapped)
+        if (selectedLabel.trapped && selectedLabel.hp <= 50f && !playerTrapped)
         {
             playerTrapped = true;
+            selectedLabel.hp = 50;
         }
     }
 
