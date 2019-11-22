@@ -958,6 +958,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e664b20f7112d5646b79abd7e7e18395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprRenderer: {fileID: 0}
+  sprIdle: {fileID: 21300000, guid: 4eacea7f60d58a146920e2f076d7fa26, type: 3}
+  sprScraping: {fileID: 21300000, guid: 03c43a9e6a2e81e458c4cb33774eaec8, type: 3}
+  sprLose: {fileID: 21300000, guid: 75a9eab5407f2014dacc28cad847f709, type: 3}
+  sprWin: {fileID: 21300000, guid: dcaf98ba6a0a45c448d64c507e4d363f, type: 3}
 --- !u!1 &1579778337
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour
     public difficultyEnum difficulty = difficultyEnum.Easy;
     public int gameDuration = 6;
 
+    
+
+    public GameState gameState = GameState.Ongoing;
+
     public bool debug;
     public Text text;
 
@@ -55,7 +59,6 @@ public class GameManager : MonoBehaviour
     {
         selectedLabel = labelBits[0];
 
-        //Trap Setup According to difficulty
         TrapSetup();
 
         text.text = "";
@@ -198,11 +201,13 @@ public class GameManager : MonoBehaviour
         StopAllCoroutines();
         if (victory)
         {
+            gameState = GameState.Victory;
             text.color = Color.green;
             text.text = "jéjé";
         }
         else
         {
+            gameState = GameState.Defeat;
             text.color = Color.red;
             text.text = "mek t con c fou";
         }
@@ -216,4 +221,11 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+}
+
+public enum GameState
+{
+    Ongoing = 0,
+    Victory = 1,
+    Defeat = 2
 }
