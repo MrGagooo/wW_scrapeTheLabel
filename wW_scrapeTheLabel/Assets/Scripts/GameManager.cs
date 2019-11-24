@@ -101,6 +101,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown("d"))
+        {
+            debug = !debug;
+        }
+
         if (scrapingEnabled)
         {
             scrollDeltaY = Input.mouseScrollDelta.y;
