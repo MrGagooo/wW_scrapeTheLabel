@@ -4,233 +4,242 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+namespace Game.ScrapeTheLabel
 {
-    //Instance
-    public static GameManager _instance;
-    public static GameManager Instance { get { return _instance; } }
-
-    //Public
-    public enum difficultyEnum
-        {Easy = 0,
-         Medium = 1,
-         Hard = 2}
-
-    public difficultyEnum difficulty = difficultyEnum.Easy;
-    public int gameDuration = 6;
-
-    
-
-    public GameState gameState = GameState.Ongoing;
-
-    public bool debug;
-    public Text text;
-
-    public float scrapeForce = 3.0f;
-    public List<LabelBitBehavior> labelBits;
-
-    public LabelBitBehavior selectedLabel;
-    public bool playerTrapped = false;
-
-    public bool playerIsScraping = false;
-    public bool scrapingEnabled = true;
-
-    //Private
-    private float scrollDeltaY;
-    private float damageToInflict;
-    private int actualGameDuration;
-
-
-    private void Awake()
+    public class GameManager : MonoBehaviour
     {
-        if(_instance != null && _instance != this)
+        //Instance
+        public static GameManager _instance;
+        public static GameManager Instance { get { return _instance; } }
+
+        //Public
+        public enum difficultyEnum
         {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
+            Easy = 0,
+            Medium = 1,
+            Hard = 2
         }
 
-        SetupGame();
-    }
+        public difficultyEnum difficulty = difficultyEnum.Easy;
+        public int gameDuration = 6;
 
-    private void SetupGame()
-    {
-        selectedLabel = labelBits[0];
 
-        TrapSetup();
 
-        text.text = "";
-        StartCoroutine(Timer());
-    }
+        public GameState gameState = GameState.Ongoing;
 
-    private void TrapSetup()
-    {
-        if (difficulty == difficultyEnum.Medium)
+        public bool debug;
+        public Text text;
+
+        public float scrapeForce = 3.0f;
+        public List<LabelBitBehavior> labelBits;
+
+        public LabelBitBehavior selectedLabel;
+        public bool playerTrapped = false;
+
+        public bool playerIsScraping = false;
+        public bool scrapingEnabled = true;
+
+        public GameObject trap;
+
+        //Private
+        private float scrollDeltaY;
+        private float damageToInflict;
+        private int actualGameDuration;
+
+
+        private void Awake()
         {
-            var trap1 = Random.Range(0, 3);
-
-            for(int i = 0; i < labelBits.Count - 1; i++)
+            if (_instance != null && _instance != this)
             {
-                if (i == trap1)
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+
+            SetupGame();
+        }
+
+        private void SetupGame()
+        {
+            selectedLabel = labelBits[0];
+
+            TrapSetup();
+
+            text.text = "";
+            StartCoroutine(Timer());
+        }
+
+        private void TrapSetup()
+        {
+            if (difficulty == difficultyEnum.Medium)
+            {
+                var trap1 = Random.Range(0, 3);
+
+                for (int i = 0; i < labelBits.Count - 1; i++)
                 {
-                    labelBits[i].trapped = true;
+                    if (i == trap1)
+                    {
+                        labelBits[i].trapped = true;
+                    }
+                }
+            }
+            else if (difficulty == difficultyEnum.Hard)
+            {
+                var trap1 = Random.Range(0, 3);
+                var trap2 = Random.Range(0, 3);
+                while (trap1 == trap2)
+                {
+                    trap2 = Random.Range(0, 3);
+                }
+
+                for (int i = 0; i < labelBits.Count - 1; i++)
+                {
+                    if (i == trap1 || i == trap2)
+                    {
+                        labelBits[i].trapped = true;
+                    }
                 }
             }
         }
-        else if (difficulty == difficultyEnum.Hard)
+
+
+        void Update()
         {
-            var trap1 = Random.Range(0, 3);
-            var trap2 = Random.Range(0, 3);
-            while (trap1 == trap2)
+            if (Input.GetKeyDown("d"))
             {
-                trap2 = Random.Range(0, 3);
+                debug = !debug;
             }
 
-            for (int i = 0; i < labelBits.Count - 1; i++)
+            if (scrapingEnabled)
             {
-                if (i == trap1 || i == trap2)
+                scrollDeltaY = Input.mouseScrollDelta.y;
+            }
+            else
+            {
+                scrollDeltaY = 0;
+            }
+
+            TrapTrigger();          // If necessary
+
+            DamageProcess();
+            SwitchSelectedLabel();  // If necessary
+            InflictDamage();
+
+            CheckWin();
+
+        }
+
+
+        private void TrapTrigger()
+        {
+            if (selectedLabel.trapped && selectedLabel.hp <= 50f && !playerTrapped)
+            {
+                playerTrapped = true;
+                selectedLabel.hp = 50;
+                Instantiate(trap, selectedLabel.transform.position, Quaternion.identity);
+            }
+        }
+
+        private void SwitchSelectedLabel()
+        {
+            if (selectedLabel.hp <= 0 && damageToInflict == 0)
+            {
+                if (labelBits.Count != 1)
                 {
-                    labelBits[i].trapped = true;
+                    labelBits.RemoveAt(0);
+                    selectedLabel = labelBits[0];
                 }
             }
         }
-    }
 
-
-    void Update()
-    {
-        if (Input.GetKeyDown("d"))
+        private void DamageProcess()
         {
-            debug = !debug;
-        }
-
-        if (scrapingEnabled)
-        {
-            scrollDeltaY = Input.mouseScrollDelta.y;
-        }
-        else
-        {
-            scrollDeltaY = 0;
-        }
-
-        TrapTrigger();          // If necessary
-
-        DamageProcess();
-        SwitchSelectedLabel();  // If necessary
-        InflictDamage();
-
-        CheckWin();
-
-    }
-
-
-    private void TrapTrigger()
-    {
-        if (selectedLabel.trapped && selectedLabel.hp <= 50f && !playerTrapped)
-        {
-            playerTrapped = true;
-            selectedLabel.hp = 50;
-        }
-    }
-
-    private void SwitchSelectedLabel()
-    {
-        if (selectedLabel.hp <= 0 && damageToInflict == 0)
-        {
-            if (labelBits.Count != 1)
+            if (!playerTrapped)
             {
-                labelBits.RemoveAt(0);
-                selectedLabel = labelBits[0];
+                damageToInflict = Mathf.Clamp(scrollDeltaY * scrapeForce, Mathf.NegativeInfinity, 0);
+            }
+            else
+            {
+                damageToInflict = Mathf.Clamp(scrollDeltaY * scrapeForce, 0, Mathf.Infinity);
+            }
+            if (damageToInflict < 0)
+            {
+                playerIsScraping = true;
+            }
+            else
+            {
+                playerIsScraping = false;
             }
         }
-    }
 
-    private void DamageProcess()
-    {
-        if (!playerTrapped)
+        private void InflictDamage()
         {
-            damageToInflict = Mathf.Clamp(scrollDeltaY * scrapeForce, Mathf.NegativeInfinity, 0);
-        }
-        else
-        {
-            damageToInflict = Mathf.Clamp(scrollDeltaY * scrapeForce, 0, Mathf.Infinity);
-        }
-        if (damageToInflict < 0)
-        {
-            playerIsScraping = true;
-        }
-        else
-        {
-            playerIsScraping = false;
-        }
-    }
-
-    private void InflictDamage()
-    {
-        if (!playerTrapped)
-        {
-            selectedLabel.hp += damageToInflict;
-        }
-        else
-        {
-            if (damageToInflict > 0)
+            if (!playerTrapped)
             {
-                playerTrapped = false;
-                selectedLabel.trapped = false;
+                selectedLabel.hp += damageToInflict;
+            }
+            else
+            {
+                if (damageToInflict > 0)
+                {
+                    playerTrapped = false;
+                    selectedLabel.trapped = false;
+                    Destroy(GameObject.Find("paperTrap(Clone)"));
+                }
             }
         }
-    }
 
-    private void CheckWin()
-    {
-        if (labelBits.Count == 1 && selectedLabel.hp <= 0)
+        private void CheckWin()
         {
-            EndGame(true);
+            if (labelBits.Count == 1 && selectedLabel.hp <= 0)
+            {
+                EndGame(true);
+            }
+        }
+
+
+        private IEnumerator Timer()
+        {
+            yield return new WaitForSeconds(gameDuration);
+
+            EndGame(false);
+        }
+
+        private void EndGame(bool victory)
+        {
+            scrapingEnabled = false;
+            StopCoroutine(Timer());
+            StopAllCoroutines();
+            if (victory)
+            {
+                gameState = GameState.Victory;
+                text.color = Color.green;
+                text.text = "jéjé";
+            }
+            else
+            {
+                gameState = GameState.Defeat;
+                text.color = Color.red;
+                text.text = "mek t con c fou";
+            }
+
+            StartCoroutine(StopGame());
+        }
+
+        private IEnumerator StopGame()
+        {
+            yield return new WaitForSeconds(2);
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
-
-    private IEnumerator Timer()
+    public enum GameState
     {
-        yield return new WaitForSeconds(gameDuration);
-
-        EndGame(false);
+        Ongoing = 0,
+        Victory = 1,
+        Defeat = 2
     }
-
-    private void EndGame(bool victory)
-    {
-        scrapingEnabled = false;
-        StopCoroutine(Timer());
-        StopAllCoroutines();
-        if (victory)
-        {
-            gameState = GameState.Victory;
-            text.color = Color.green;
-            text.text = "jéjé";
-        }
-        else
-        {
-            gameState = GameState.Defeat;
-            text.color = Color.red;
-            text.text = "mek t con c fou";
-        }
-
-        StartCoroutine(StopGame());
-    }
-
-    private IEnumerator StopGame()
-    {
-        yield return new WaitForSeconds(2);
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-}
-
-public enum GameState
-{
-    Ongoing = 0,
-    Victory = 1,
-    Defeat = 2
 }
