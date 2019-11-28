@@ -27,7 +27,6 @@ namespace Game.ScrapeTheLabel
 
         public GameState gameState = GameState.Ongoing;
 
-        public bool debug;
         public Text text;
 
         public float scrapeForce = 3.0f;
@@ -40,14 +39,18 @@ namespace Game.ScrapeTheLabel
         public bool scrapingEnabled = true;
 
         public GameObject trap;
+        public TutorialArrow tutorialArrow;
 
         //Private
         private float scrollDeltaY;
         private float damageToInflict;
         private int actualGameDuration;
 
+        private float trappedTutoTimer = 0.5f;
+        private float timer;
 
-        private void Awake()
+
+        private void Start()
         {
             if (_instance != null && _instance != this)
             {
@@ -67,7 +70,6 @@ namespace Game.ScrapeTheLabel
 
             TrapSetup();
 
-            text.text = "";
             StartCoroutine(Timer());
         }
 
@@ -107,11 +109,6 @@ namespace Game.ScrapeTheLabel
 
         void Update()
         {
-            if (Input.GetKeyDown("d"))
-            {
-                debug = !debug;
-            }
-
             if (scrapingEnabled)
             {
                 scrollDeltaY = Input.mouseScrollDelta.y;
@@ -120,6 +117,8 @@ namespace Game.ScrapeTheLabel
             {
                 scrollDeltaY = 0;
             }
+
+            TutorialSpawn();        // If necessary
 
             TrapTrigger();          // If necessary
 
@@ -184,9 +183,7 @@ namespace Game.ScrapeTheLabel
             {
                 if (damageToInflict > 0)
                 {
-                    playerTrapped = false;
-                    selectedLabel.trapped = false;
-                    Destroy(GameObject.Find("paperTrap(Clone)"));
+                    Untrap();
                 }
             }
         }
@@ -209,20 +206,17 @@ namespace Game.ScrapeTheLabel
 
         private void EndGame(bool victory)
         {
+            Untrap();
             scrapingEnabled = false;
             StopCoroutine(Timer());
             StopAllCoroutines();
             if (victory)
             {
                 gameState = GameState.Victory;
-                text.color = Color.green;
-                text.text = "jéjé";
             }
             else
             {
                 gameState = GameState.Defeat;
-                text.color = Color.red;
-                text.text = "mek t con c fou";
             }
 
             StartCoroutine(StopGame());
@@ -233,6 +227,33 @@ namespace Game.ScrapeTheLabel
             yield return new WaitForSeconds(2);
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        private void Untrap()
+        {
+            playerTrapped = false;
+            selectedLabel.trapped = false;
+            Destroy(GameObject.Find("paperTrap(Clone)"));
+        }
+
+        private void TutorialSpawn()
+        {
+            if (playerTrapped)
+            {
+                timer += Time.deltaTime;
+
+                if (timer >= trappedTutoTimer)
+                {
+                    tutorialArrow.tutEnabled = true;
+                }
+            }
+            else
+            {
+                timer = 0;
+                tutorialArrow.tutEnabled = false;
+            }
+
+            
         }
     }
 

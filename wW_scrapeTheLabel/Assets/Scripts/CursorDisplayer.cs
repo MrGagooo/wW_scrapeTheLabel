@@ -55,13 +55,19 @@ namespace Game.ScrapeTheLabel
             }
             else
             {
-                if (GameManager.Instance.playerIsScraping || GameManager.Instance.playerTrapped)
+                if (GameManager.Instance.playerIsScraping)
                 {
                     sprRenderer.sprite = sprScraping;
+                    animator.SetBool("IsTrapped", false);
+                }
+                else if (GameManager.Instance.playerTrapped)
+                {
+                    animator.SetBool("IsTrapped", true);
                 }
                 else
                 {
                     sprRenderer.sprite = sprIdle;
+                    animator.SetBool("IsTrapped", false);
                 }
             }
 

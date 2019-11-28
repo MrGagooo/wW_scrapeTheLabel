@@ -20,16 +20,6 @@ namespace Game.ScrapeTheLabel
 
         private void OnGUI()
         {
-            if (GameManager.Instance.debug)
-            {
-                text.text = hp.ToString();
-            }
-            else
-            {
-                text.text = "";
-            }
-
-
             sprMask.transform.localScale = new Vector3(sprMask.transform.localScale.x, Mathf.Clamp((float)(0.0041 * hp), 0, .41f), sprMask.transform.localScale.z);
             sprMask.transform.position = new Vector3(sprMask.transform.position.x, (float)(0.0275 * hp + -2.75), sprMask.transform.position.z);
         }
