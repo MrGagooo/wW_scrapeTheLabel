@@ -1032,10 +1032,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   difficulty: 2
-  gameDuration: 10
+  gameDuration: 5
   gameState: 0
   text: {fileID: 0}
-  scrapeForce: 5
+  scrapeForce: 15
   labelBits:
   - {fileID: 297301443}
   - {fileID: 1739633120}
@@ -2328,6 +2328,11 @@ PrefabInstance:
     - target: {fileID: 7277725122852019883, guid: ee5430f1c3055734eb8ddb64afbb1f55,
         type: 3}
       propertyPath: scrapeForce
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7277725122852019883, guid: ee5430f1c3055734eb8ddb64afbb1f55,
+        type: 3}
+      propertyPath: gameDuration
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7277725122852019882, guid: ee5430f1c3055734eb8ddb64afbb1f55,
