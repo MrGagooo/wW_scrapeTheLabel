@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BPM
   m_EditorClassIdentifier: 
   _developerDescription: Beat par minute
-  _value: 96
-  _initialValue: 96
+  _value: 160
+  _initialValue: 160
   _oldValue: 95
   Changed: {fileID: 0}
   ChangedWithHistory: {fileID: 0}

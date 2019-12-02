@@ -127,6 +127,7 @@ namespace Game.ScrapeTheLabel
             {
                 Macro.StartTimer(2.0f, false);
             }
+
             else
             {
                 Macro.StartTimer(5.0f, false);
