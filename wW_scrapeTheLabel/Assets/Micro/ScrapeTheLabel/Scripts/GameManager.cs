@@ -242,7 +242,10 @@ namespace Game.ScrapeTheLabel
 
         protected override void OnTimerEnd()
         {
-            EndGame(false);
+            if (gameState != GameState.Victory)
+            {
+                EndGame(false);
+            }
         }
 
         private void EndGame(bool victory)
