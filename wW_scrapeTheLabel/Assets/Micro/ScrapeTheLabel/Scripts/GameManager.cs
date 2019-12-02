@@ -49,6 +49,9 @@ namespace Game.ScrapeTheLabel
         private float trappedTutoTimer = 0.5f;
         private float timer;
 
+        private float scrapingTimer;
+        private bool wasScrapingLastFrame;
+
 
         private void Start()
         {
@@ -129,8 +132,8 @@ namespace Game.ScrapeTheLabel
                 Macro.StartTimer(5.0f, false);
             }
 
-            Macro.DisplayActionVerb("Scrape!");
-
+            SoundManager.Instance.StartMusic();
+            Macro.DisplayActionVerb("Scrape!", 1);
         }
 
         void Update()
@@ -189,14 +192,29 @@ namespace Game.ScrapeTheLabel
             {
                 damageToInflict = Mathf.Clamp(scrollDeltaY * scrapeForce, 0, Mathf.Infinity);
             }
+
+            scrapingTimer += Time.deltaTime;
+
             if (damageToInflict < 0)
             {
                 playerIsScraping = true;
+                scrapingTimer = 0;
             }
             else
             {
-                playerIsScraping = false;
+                if (scrapingTimer >= 0.1f)
+                {
+                    playerIsScraping = false;
+                    SoundManager.Instance.StopScrapingSound();
+                }
             }
+
+            if (playerIsScraping && !wasScrapingLastFrame)
+            {
+                SoundManager.Instance.PlayScrapingSound();
+            }
+
+            wasScrapingLastFrame = playerIsScraping;
         }
 
         private void InflictDamage()
@@ -216,7 +234,7 @@ namespace Game.ScrapeTheLabel
 
         private void CheckWin()
         {
-            if (labelBits.Count == 1 && selectedLabel.hp <= 0)
+            if (labelBits.Count == 1 && selectedLabel.hp <= 0 && gameState == GameState.Ongoing)
             {
                 EndGame(true);
             }
@@ -257,6 +275,7 @@ namespace Game.ScrapeTheLabel
             playerTrapped = false;
             selectedLabel.trapped = false;
             Destroy(GameObject.Find("paperTrap(Clone)"));
+            SoundManager.Instance.PlayUntrapSound();
         }
 
         private void TutorialSpawn()
