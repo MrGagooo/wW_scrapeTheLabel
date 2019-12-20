@@ -21,6 +21,6 @@ MonoBehaviour:
     m_SceneName: ScrapeTheLabel
   designer: Hugo Raguin
   programmer: "Cl\xE9ment Amendola"
-  thumbnail: {fileID: 0}
+  thumbnail: {fileID: 21300000, guid: 549a9523c25d4944e93ff4bf7f78828e, type: 3}
   inputSprite: {fileID: 0}
   data: {}
